@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { ToastContainer} from 'react-toastify';
-import { getDocs, getFirestore, collection} from 'firebase/firestore'
 import Spinner from 'react-bootstrap/Spinner';
 import Carousel from 'react-bootstrap/Carousel';
 import { CarouselItem } from 'react-bootstrap';
+import { ProductContext } from '../../context/ProductContext';
 
 const Inicio = () => {
-    
+
+    const { getProducts } = useContext(ProductContext)
     const [cardsProducts, setCardsProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const db = getFirestore()
-        const cardsProductsRef = collection(db, "items")
-        getDocs(cardsProductsRef).then((snapshot)=>{
-            setCardsProducts(snapshot.docs.map((doc) => ({id:doc.id, ...doc.data()}) ))
-        })
-        .finally(() => setLoading(false));
-    }, []);
+        const fetchData = async () => {
+            try {
+            const data = await getProducts();
+            setCardsProducts(data.results);
+            setLoading(false);
+            } catch (error) {
+            console.error('Error:', error);
+            };
+        };
+        fetchData();
+    }, [getProducts]);
 
     if (loading === true){
         return (
@@ -31,7 +36,7 @@ const Inicio = () => {
 
     return (
         <>
-        <Link className="nav-link" aria-current="page" to={'/Category/todos'}>
+        <Link target="_blank" rel="noreferrer" className="nav-link" aria-current="page" to={'/products'}>
             <div className='divTodos'>
                 <div className='TodosProd'>
                     <span>Productos Destacados&nbsp;&nbsp;&nbsp;</span>
@@ -42,7 +47,7 @@ const Inicio = () => {
             </div>
         </Link>
         <div id='Video'>
-                <div id="products">
+                {/* <div id="products">
                     <Carousel variant="dark rounded">
                     {
                     cardsProducts.map((product)=>(
@@ -61,7 +66,7 @@ const Inicio = () => {
                     ))
                     }
                     </Carousel>
-                </div>
+                </div> */}
                 <ToastContainer/>
             <video controls>
                 <source type='video/mp4' src='https://res.cloudinary.com/dsdicaf5h/video/upload/v1677263045/cenicero/Untitled_2_of5elw.mp4'/>

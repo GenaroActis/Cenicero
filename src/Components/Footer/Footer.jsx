@@ -5,11 +5,11 @@ const Footer = () => {
     return (
         <footer id='footer' className="py-3">
             <ul className="nav justify-content-center border-bottom pb-3 mb-3">
-                <li className="nav-item"><Link className="nav-link px-2 text-white" aria-current="page" to={`/Category/todos`}>Productos</Link></li>
-                <li className="nav-item"><Link className="nav-link px-2 text-white" aria-current="page" to={`/ceni0-reactjs`}>Inicio</Link></li>
-                <li className="nav-item"><Link className="nav-link px-2 text-white" aria-current="page" to={`/Nosotros`}>Nosotros</Link></li>
+                <li className="nav-item"><Link target="_blank" rel="noreferrer" className="nav-link px-2 text-white" aria-current="page" to={`/Category/todos`}>Productos</Link></li>
+                <li className="nav-item"><Link target="_blank" rel="noreferrer" className="nav-link px-2 text-white" aria-current="page" to={`/cenicero`}>Inicio</Link></li>
+                <li className="nav-item"><Link target="_blank" rel="noreferrer" className="nav-link px-2 text-white" aria-current="page" to={`/Nosotros`}>Nosotros</Link></li>
             </ul>
-            <p className="text-center text-white">© 2022 Company, Actis Inc</p>
+            <p className="text-center text-white">© 2022 Company, Inc</p>
         </footer>
     )
 }

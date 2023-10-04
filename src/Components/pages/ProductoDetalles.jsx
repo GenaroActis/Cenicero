@@ -4,33 +4,31 @@ import Carousel from 'react-bootstrap/Carousel';
 import Card from 'react-bootstrap/Card';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {CartContext} from '../../context/CartContext';
-import {doc, getDoc, getDocs, getFirestore, collection} from 'firebase/firestore'
+import { ProductContext } from '../../context/ProductContext';
+import { CartContext } from '../../context/CartContext';
 import Spinner from 'react-bootstrap/Spinner';
+import { fetchUrl } from '../../index.js';
 
 
-
-const  Producto = (children) => {
-    const {agregarProducto, agregado, guardarLocalStorage, productosElegidos, itemEnCarrito} = useContext(CartContext);
+const  Producto = () => {
+    const { getProductById } = useContext(ProductContext);
+    const { addProductToCart } = useContext(CartContext);
     const [loading, setLoading] = useState(true);
-    // toastify
-    
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState([]);
     const { id } = useParams();
-    
-    // fetch al link del json
     useEffect(() => {
-        const db = getFirestore()
-        const cardsProductsRef = doc(db, "items", id)
-        getDoc(cardsProductsRef).then((snapshot)=>{
-            if(snapshot.exists()){
-                setProduct({id: snapshot.id, ...snapshot.data()})
-            }
-        })
-        .finally(() => setLoading(false));
-    }, []);
+        const fetchData = async () => {
+            try {
+            const data = await getProductById(id);
+            setProduct(data);
+            setLoading(false);
+            } catch (error) {
+            throw new Error (error);
+            };
+        };
+        fetchData();
+    }, [id]);
 
-    // si esta cargando mostramos un spinner
     if (loading === true){
         return (
         
@@ -40,55 +38,49 @@ const  Producto = (children) => {
         </div>
         )
     }
-
-    // const productoFiltrado = cardsProducts.filter(product => String(product.id) === id )
     return (
-        <div key={id} id='detalleProducto'>
+        <div key={product._id} id='detalleProducto'>
             <>
-                <React.Fragment key={product.id}>
+                <React.Fragment key={product._id}>
                     <div id='carousel'>
                         <Carousel variant="dark rounded">
                             <Carousel.Item>
                                 <img
                                 className="d-block w-100 img-fluid rounded"
-                                src={product.img1}
+                                src={fetchUrl+product.img}
                                 alt="First slide"
                                 />
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
                                 className="d-block w-100 rounded"
-                                src={product.img2}
+                                src={fetchUrl+product.img}
                                 alt="Second slide"
                                 />
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
                                 className="d-block w-100 rounded"
-                                src={product.img3}
+                                src={fetchUrl+product.img}
                                 alt="Third slide"
                                 />
                             </Carousel.Item>
                         </Carousel>
                     </div>
-                    {/* generamos la card con los detalles del producto */}
                     <div id='cardDetalles'>
                         <Card>
                             <Card.Body className='text-center'>
-                                <Card.Title id='nombre' className="display-1 shadow-lg p-3 mb-5 bg-white rounded">{product.nombre}</Card.Title>
+                                <Card.Title id='nombre' className="display-1 shadow-lg p-3 mb-5 bg-white rounded">{product.title}</Card.Title>
                                 <Card.Text id='medidas' className="display-3 shadow-lg p-3 mb-5 bg-white rounded">
-                                Talle {product.talle} <br />
-                                {product.medidas} 
+                                Talle {product.size} <br />
+                                {product.description} 
                                 </Card.Text>
                                 <Card.Text id='precio' className="display-1 shadow-lg p-3 mb-5 bg-white rounded">
-                                ${product.precio}
+                                ${product.price}
                                 </Card.Text>
                                 <div className="d-grid gap-2 col-6 mx-auto">
                                 <button id='botonAgregar' onClick={()=>{
-                                    // funcion agregado en boton
-                                    agregado()
-                                    // llamamos la funcion de agregar producto y guardar en el LocalStorage
-                                        agregarProducto(product);
+                                    addProductToCart(product._id)
                                 }} type="button" className='btn btn-lg btn-outline-primary'>agregar</button>
                                 </div>
                                 <ToastContainer/>

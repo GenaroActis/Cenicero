@@ -1,7 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import React, { createContext } from 'react'
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { fetchUrl, frontUrl } from '../index.js';
 export const CartContext = createContext();
 
 const CartProvider = ({children}) =>{
@@ -31,7 +31,7 @@ const CartProvider = ({children}) =>{
     });
     
     // funcion cambio agregar a agregado en boton
-    function agregado() {
+    function added() {
         const botonAgregar = document.querySelector("#botonAgregar")
         botonAgregar.textContent = "agregado";
         botonAgregar.style.backgroundColor = "#da8a0d";
@@ -43,114 +43,126 @@ const CartProvider = ({children}) =>{
             }, 3000);
     };
 
-    // llamamos a el array del localStorage si existe
-    let initialProductosElegidos = [];
-
-    initialProductosElegidos = window.localStorage.getItem('productosElegidos')
-    ? (JSON.parse(window.localStorage.getItem('productosElegidos'))) : (initialProductosElegidos = []);
-
-    let [productosElegidos, setProductosElegidos] = useState(initialProductosElegidos)
-
-    // verificamos si existe en el carrito
-    const itemEnCarrito = (prodId) => {
-        return productosElegidos.find((product) => product.id === prodId) || null;
-    };
-
-    
-
-    const agregarProducto = (product) => {
-        const itemParaActualizar = itemEnCarrito(product.id);
-        
-            // si el elemento si existe actualizamos cantidad elegida y precio subtotal
-            if (itemParaActualizar){
-                // si la cantidad elegida es igual al limite de stock que ....
-                if (itemParaActualizar.elegidos === itemParaActualizar.stock){
-                    notify2()
-                } else {
-                let precioParaActualizar = itemParaActualizar.precio;
-                itemParaActualizar.elegidos = itemParaActualizar.elegidos + 1;
-                itemParaActualizar.precioSubTotal = itemParaActualizar.elegidos * precioParaActualizar;
-                setProductosElegidos([...productosElegidos]);
-                notify1()
-                }
+    const getCart = async () =>{
+        try { 
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${fetchUrl}/api/carts`, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json()
+                return data.data
+            } else {
+                window.location.href =  `${frontUrl}/`
+                throw new Error('Error en la solicitud');
             }
-            // si el elemento no existe ya en el array productosElegidos que....
-            else{
-                    productosElegidos.push({
-                        id : product.id,
-                        talle : product.talle,
-                        nombre : product.nombre,
-                        precio : product.precio,
-                        img1 : product.img1,
-                        img2 : product.img2,
-                        precioSubTotal : product.precio,
-                        elegidos : 1,
-                        stock : product.stock
-                    })
-                    notify1()
-                    
-                    setProductosElegidos([...productosElegidos]);
-            }
-    };
-
-    const limpiarCarrito = () => {
-        productosElegidos = [];
-        window.sessionStorage.clear();
-        setProductosElegidos([...productosElegidos]);
-        guardarLocalStorage();
-    };
-
-    const eliminarItem = (prodId) => {
-        let itemParaActualizar = itemEnCarrito(prodId);
-        // si la cantidad es menos a dos limpiamos el producto
-        if (itemParaActualizar.elegidos < 2 ){
-            productosElegidos = productosElegidos.filter((product) => product.id !== prodId);
-            itemParaActualizar.elegidos = 0;
-        }
-        // sino descontamos uno a cantidad elegida
-        else {
-            itemParaActualizar.elegidos = itemParaActualizar.elegidos - 1;
-            let precioParaActualizar = itemParaActualizar.precio;
-            itemParaActualizar.precioSubTotal = itemParaActualizar.elegidos * precioParaActualizar;
+        } catch (error) {
+            throw new Error(error)
         };
-        setProductosElegidos([...productosElegidos]);
-        guardarLocalStorage();
     };
 
-    // elimina un item con sus cantidades desde el carrito
-    const limpiarItem = (prodId) => {
-        productosElegidos = productosElegidos.filter((product) => product.id !== prodId);
-        setProductosElegidos([...productosElegidos]);
-        guardarLocalStorage();
-    }
-
-    // funcion calcular el total del precio
-    let [totalPrecio, setTotalPrecio] = useState(0);
-
-    const totalPrecioFunctions = () => {
-        if(productosElegidos.length > 0) {
-            totalPrecio = productosElegidos.reduce((acumulador, product) => acumulador + product.precioSubTotal, 0);
-            setTotalPrecio(totalPrecio);
-        }
-    }
-    const guardarLocalStorage = () => {
-        // convertimos los objetos en json
-        const JsonProductos = JSON.stringify(productosElegidos);
-        // almacenamos en localStorage
-        if (window.localStorage) {
-            window.localStorage.setItem("productosElegidos", JsonProductos);
-        }
+    const addProductToCart = async (prodId) =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${fetchUrl}/api/carts/${prodId}`, {
+                method: 'PUT',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                },
+            });
+            if (response.ok) {
+                await response.json();
+                notify1()
+            } else {
+                window.location.href = `${frontUrl}/`
+                throw new Error('Error en la solicitud');
+            }
+        } catch (error) {
+            throw new Error(error)
+        };
     };
 
-    // usamos el useEffect para actualizar el localStorage y el totalPrecio
-    useEffect(() => {
-        guardarLocalStorage();
-        totalPrecioFunctions();
-    }, [productosElegidos]);
-    
+    const deleteProductToCart = async (prodId) =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${fetchUrl}/api/carts/${prodId}`, {
+                method: 'DELETE',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                },
+            });
+            if (response.ok) {
+                await response.json();
+            } else {
+                window.location.href = `${frontUrl}/`
+                throw new Error('Error en la solicitud');
+            }
+        } catch (error) {
+            throw new Error(error)
+        };
+    };
+
+    const deleteAllProductsToCart = async () =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${fetchUrl}/api/carts`, {
+                method: 'DELETE',
+                headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                },
+            });
+            if (response.ok) {
+                await response.json();
+            } else {
+                window.location.href = `${frontUrl}/`
+                throw new Error('Error en la solicitud');
+            }
+        } catch (error) {
+            throw new Error(error)
+        };
+    };
+
+    const updateQuantityToCart = async (quantity, prodId) =>{
+        try {
+            const response = await fetch(`${fetchUrl}/api/carts/quantity/${prodId}`, {
+                method: 'PUT',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(quantity),
+            });
+            if (response.ok) {
+                await response.json();
+            } else {
+                window.location.href = `${frontUrl}/`
+                throw new Error('Error en la solicitud');
+            }
+        } catch (error) {
+            throw new Error(error)
+        };
+    };
+
+    const totalPriceFunction = async () =>{
+        try {
+            const cart = await getCart()
+            const totalPrice = cart.products.reduce((accumulator, product) => {
+                return accumulator + product.quantity * product._id.price;
+            }, 0);
+            return totalPrice;
+        } catch (error) {
+            throw new Error(error)
+        }
+    };
 
     return(
-        <CartContext.Provider value={{limpiarItem, agregado, totalPrecioFunctions, totalPrecio, productosElegidos, initialProductosElegidos, guardarLocalStorage, limpiarCarrito, itemEnCarrito,  eliminarItem, agregarProducto, localStorage}}>
+        <CartContext.Provider value={{totalPriceFunction, getCart, addProductToCart, deleteProductToCart, deleteAllProductsToCart, updateQuantityToCart, added, notify1, notify2}}>
         {children}
         </CartContext.Provider>
     )

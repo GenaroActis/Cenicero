@@ -1,6 +1,6 @@
 {
-  "homepage":"https://GenaroActis.github.io/ceni0-reactjs",
-  "name": "cenicero-reactjs",
+  "homepage":"https://GenaroActis.github.io/cenicero",
+  "name": "cenicero",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
