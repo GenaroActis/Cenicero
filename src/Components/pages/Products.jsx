@@ -49,7 +49,7 @@ const Products = () => {
             </DropdownButton>
                 <div className="row" id="productos">
                 {cardsProducts.map((product) => (
-                    <Link target="_blank" rel="noreferrer" key={product._id} className="nav-link" aria-current="page" to={`/producto/${product._id}`}>
+                    <Link target="_self" rel="noreferrer" key={product._id} className="nav-link" aria-current="page" to={`/producto/${product._id}`}>
                         <div className="card text-dark mt-5">
                             <img src= {fetchUrl + product.img} className="card-img-top mt-2 img-fluid" alt="product image" srcSet="" />
                             <img src={fetchUrl + product.img} className="card-img img-fluid" id="img2" alt="" srcSet="" />
@@ -69,18 +69,18 @@ const Products = () => {
                 <ul className="pagination">
                 {pagData.hasPrevPage && (
                     <li className="page-item">
-                        <Link target="_blank" rel="noreferrer" className="page-link" to={pagData.prevPageLink}>
+                        <Link target="_self" rel="noreferrer" className="page-link" to={pagData.prevPageLink}>
                             Previous
                         </Link>
                     </li>
                 )}
-                    <li id='1' className={`page-item ${pagData.actualPage === 1 ? 'active' : ''}`}><Link target="_blank" rel="noreferrer" className="page-link" to={`/products`}>1</Link></li>
-                    <li id='2' className={`page-item ${pagData.actualPage === 2 ? 'active' : ''}`}><Link target="_blank" rel="noreferrer" className="page-link" to={`/products/page=2`}>2</Link></li>
-                    <li id='3' className={`page-item ${pagData.actualPage === 3 ? 'active' : ''}`}><Link target="_blank" rel="noreferrer" className="page-link" to={`/products/page=3`}>3</Link></li>
-                    <li id='4' className={`page-item ${pagData.actualPage === 4 ? 'active' : ''}`}><Link target="_blank" rel="noreferrer" className="page-link" to={`/products/page=4`}>4</Link></li>
+                    <li id='1' className={`page-item ${pagData.actualPage === 1 ? 'active' : ''}`}><Link target="_self" rel="noreferrer" className="page-link" to={`/products`}>1</Link></li>
+                    <li id='2' className={`page-item ${pagData.actualPage === 2 ? 'active' : ''}`}><Link target="_self" rel="noreferrer" className="page-link" to={`/products/page=2`}>2</Link></li>
+                    <li id='3' className={`page-item ${pagData.actualPage === 3 ? 'active' : ''}`}><Link target="_self" rel="noreferrer" className="page-link" to={`/products/page=3`}>3</Link></li>
+                    <li id='4' className={`page-item ${pagData.actualPage === 4 ? 'active' : ''}`}><Link target="_self" rel="noreferrer" className="page-link" to={`/products/page=4`}>4</Link></li>
                 {pagData.hasNextPage && (
                     <li className="page-item">
-                        <Link target="_blank" rel="noreferrer" className="page-link" to={pagData.nextPageLink}>
+                        <Link target="_self" rel="noreferrer" className="page-link" to={pagData.nextPageLink}>
                             Next
                         </Link>
                     </li>

@@ -34,6 +34,7 @@ function ModalCart(children) {
     const handleAddToCart = async (productId) => {
         try {
             await addProductToCart(productId);
+            console.log(productId)
             await fetchData();
         } catch (error) {
             console.error(error);

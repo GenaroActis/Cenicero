@@ -89,6 +89,8 @@ const AdminProvider = ({children}) =>{
                     window.location.href = `${frontUrl}/`
                 } else{
                     generateNotifySuccess('Product added successfully!')
+                    window.location.reload()
+                    setTimeout( ()=>{window.location.reload()}, 2000)
                     return res.data
                 }
             } else {

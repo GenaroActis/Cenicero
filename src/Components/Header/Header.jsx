@@ -25,9 +25,9 @@ const Header = () => {
                         <>
                             <div id="menu">
                                 <ul className="nav nav-pills">
-                                    <li className="nav-item"><Link target="_blank" rel="noreferrer" className="nav-link" aria-current="page" to={'/products'}>Productos</Link></li>
-                                    <li className="nav-item" id='navInicio'><Link target="_blank" rel="noreferrer" className="nav-link" aria-current="page" to={'/cenicero'}>Inicio</Link></li>
-                                    <li className="nav-item"><Link target="_blank" rel="noreferrer" className="nav-link" aria-current="page" to={'/Nosotros'}>Nosotros</Link></li>
+                                    <li className="nav-item"><Link target="_self" rel="noreferrer" className="nav-link" aria-current="page" to={'/products'}>Productos</Link></li>
+                                    <li className="nav-item" id='navInicio'><Link target="_self" rel="noreferrer" className="nav-link" aria-current="page" to={'/cenicero'}>Inicio</Link></li>
+                                    <li className="nav-item"><Link target="_self" rel="noreferrer" className="nav-link" aria-current="page" to={'/Nosotros'}>Nosotros</Link></li>
                                 </ul>
                             </div>
                             <div className='divButtons'>

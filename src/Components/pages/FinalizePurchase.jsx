@@ -112,7 +112,7 @@ const FinalizePurchase = () => {
                             </table>
                             <div className="d-flex justify-content-center">
                                 <div className="p-2">
-                                    <Link target="_blank" rel="noreferrer" className="btn btn-primary btn-block" aria-current="page" to={'/products'}>Seguir Comprando</Link>
+                                    <Link target="_self" rel="noreferrer" className="btn btn-primary btn-block" aria-current="page" to={'/products'}>Seguir Comprando</Link>
                                 </div>
                                 <div className="p-2">
                                     <button className="btn btn-success btn-block" id="button"> Finalizar Compra</button>

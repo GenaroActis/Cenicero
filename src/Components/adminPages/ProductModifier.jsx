@@ -62,7 +62,7 @@ const ProductModifier = () => {
         return (
             <>
             <div className="d-flex justify-content-center m-4 p-4">
-                <Link target="_blank" rel="noreferrer" className="nav-link btn btn-primary p-4 text-white fs-4" aria-current="page" to={'/admin'}>Admin Menu</Link>
+                <Link target="_self" rel="noreferrer" className="nav-link btn btn-primary p-4 text-white fs-4" aria-current="page" to={'/admin'}>Admin Menu</Link>
             </div>
             <div key={id} id='detalleProducto'>
                 <>
